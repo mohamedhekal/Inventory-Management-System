@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - تسجيل الدخول</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Background Pattern */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(200, 16, 46, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(200, 16, 46, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(200, 16, 46, 0.05) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .login-container {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.4) 100%);
+            padding: 50px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+            backdrop-filter: blur(20px);
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 450px;
+            text-align: center;
+        }
+
+        .logo-section {
+            margin-bottom: 40px;
+        }
+
+        .logo-icon {
+            width: 150px;
+            height: 150px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .brand-title {
+            color: #C8102E;
+            font-size: 36px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(200, 16, 46, 0.3);
+        }
+
+        .brand-subtitle {
+            color: #cccccc;
+            font-size: 16px;
+            margin-bottom: 30px;
+        }
+
+        .login-form {
+            text-align: right;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            color: #ffffff;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 15px 20px 15px 50px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid rgba(255,255,255,0.1);
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: #C8102E;
+            box-shadow: 0 0 20px rgba(200, 16, 46, 0.3);
+            background: rgba(255,255,255,0.15);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .input-icon {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #C8102E;
+            font-size: 18px;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(200, 16, 46, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .flash-message.error {
+            background: rgba(231, 76, 60, 0.2);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            color: #e74c3c;
+        }
+
+        .flash-message.success {
+            background: rgba(46, 204, 113, 0.2);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+            color: #2ecc71;
+        }
+
+        .footer-text {
+            margin-top: 30px;
+            color: #888888;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .login-container {
+                margin: 20px;
+                padding: 40px 30px;
+            }
+            
+            .logo-icon {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .brand-title {
+                font-size: 28px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .login-container {
+            animation: fadeInUp 0.8s ease forwards;
+        }
+
+        .logo-section {
+            animation: fadeInUp 0.8s ease 0.2s both;
+        }
+
+        .login-form {
+            animation: fadeInUp 0.8s ease 0.4s both;
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.1), rgba(200, 16, 46, 0.05));
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-element:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-element:nth-child(3) {
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-20px) rotate(180deg);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating Background Elements -->
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo-icon">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+            </div>
+            <h1 class="brand-title">نظام المبيعات</h1>
+            <p class="brand-subtitle">نظام إدارة الطلبات والمبيعات</p>
+        </div>
+
+        <div class="flash-messages">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <form class="login-form" method="POST">
+            <div class="form-group">
+                <label for="username">اسم المستخدم</label>
+                <div class="input-wrapper">
+                    <input type="text" id="username" name="username" placeholder="أدخل اسم المستخدم" required>
+                    <i class="fas fa-user input-icon"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="password">كلمة المرور</label>
+                <div class="input-wrapper">
+                    <input type="password" id="password" name="password" placeholder="أدخل كلمة المرور" required>
+                    <i class="fas fa-lock input-icon"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="login-btn">
+                <i class="fas fa-sign-in-alt" style="margin-left: 10px;"></i>
+                تسجيل الدخول
+            </button>
+        </form>
+
+        <div class="footer-text">
+            <p>مرحباً بك في نظام نظام المبيعات المتطور</p>
+            <p>نظام إدارة شامل للطلبات والمبيعات والموظفين</p>
+        </div>
+    </div>
+
+    <script>
+        // Add focus effects
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'scale(1.02)';
+            });
+            
+            input.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'scale(1)';
+            });
+        });
+
+        // Form validation
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+            
+            if (!username || !password) {
+                e.preventDefault();
+                alert('يرجى ملء جميع الحقول المطلوبة');
+                return false;
+            }
+        });
+
+        // Add typing effect to brand subtitle
+        const subtitle = document.querySelector('.brand-subtitle');
+        const text = subtitle.textContent;
+        subtitle.textContent = '';
+        
+        let i = 0;
+        const typeWriter = () => {
+            if (i < text.length) {
+                subtitle.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 100);
+            }
+        };
+        
+        setTimeout(typeWriter, 1000);
+    </script>
+</body>
+</html>

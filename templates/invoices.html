@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - إدارة الطلبات</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            padding: 20px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #C8102E;
+        }
+
+        .logo-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-section h2 {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu a:hover {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .nav-menu a.active {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border-color: #C8102E;
+        }
+
+        .nav-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(0,0,0,0.3) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(200, 16, 46, 0.2);
+        }
+
+        .page-title {
+            font-size: 28px;
+            color: #C8102E;
+            font-weight: bold;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .add-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(200, 16, 46, 0.3);
+            color: white;
+        }
+        
+        .delete-all-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
+            border: none;
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-right: 15px;
+        }
+        
+        .delete-all-btn:hover {
+            background: linear-gradient(135deg, #d63031 0%, #b71540 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(214, 48, 49, 0.3);
+            color: white;
+        }
+
+        /* Filters Section */
+        .filters-section {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.3) 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 30px;
+        }
+
+        .filters-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            color: #C8102E;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #C8102E;
+            box-shadow: 0 0 15px rgba(200, 16, 46, 0.2);
+        }
+
+        .filter-group input::placeholder {
+            color: rgba(255,255,255,0.6);
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            background: rgba(200, 16, 46, 0.2);
+            border: 1px solid rgba(200, 16, 46, 0.3);
+            border-radius: 8px;
+            color: #C8102E;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .filter-btn:hover {
+            background: #C8102E;
+            color: white;
+        }
+
+        .filter-btn.primary {
+            background: #C8102E;
+            color: white;
+        }
+
+        .filter-btn.primary:hover {
+            background: #a00d2a;
+        }
+        
+        .export-btn {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            border-color: #28a745;
+            color: white;
+        }
+        
+        .export-btn:hover {
+            background: linear-gradient(135deg, #218838 0%, #1ea085 100%);
+            border-color: #218838;
+        }
+        
+        /* Status Navigation */
+        .status-navigation {
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(0,0,0,0.3) 100%);
+            border-radius: 15px;
+            border: 1px solid rgba(200, 16, 46, 0.2);
+            margin-bottom: 25px;
+            padding: 20px;
+        }
+        
+        .status-tabs {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .status-tab {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 10px;
+            color: #ffffff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            min-width: 140px;
+            justify-content: center;
+        }
+        
+        .status-tab:hover {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 16, 46, 0.4);
+        }
+        
+        .status-tab.active {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border-color: #C8102E;
+            box-shadow: 0 5px 15px rgba(200, 16, 46, 0.3);
+        }
+        
+        .status-tab i {
+            font-size: 16px;
+        }
+        
+        /* Flash Messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+        
+        .flash-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .flash-message.success {
+            background: linear-gradient(135deg, #00aa00, #44ff44);
+            color: #ffffff;
+            border: 1px solid #00aa00;
+        }
+        
+        .flash-message.error {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: #ffffff;
+            border: 1px solid #ff4444;
+        }
+        
+        .flash-message.warning {
+            background: linear-gradient(135deg, #ffaa00, #ffcc44);
+            color: #ffffff;
+            border: 1px solid #ffaa00;
+        }
+        
+        .flash-close {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        
+        .flash-close:hover {
+            opacity: 1;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Export Modal */
+        .modal {
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(0,0,0,0.8) 100%);
+            border: 1px solid rgba(200, 16, 46, 0.3);
+            border-radius: 20px;
+            padding: 0;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+        }
+        
+        .modal-header {
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.2) 0%, rgba(0,0,0,0.4) 100%);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .modal-header h2 {
+            color: #C8102E;
+            margin: 0;
+            font-size: 22px;
+            font-weight: bold;
+        }
+        
+        .close {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+        
+        .close:hover {
+            color: #C8102E;
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            color: #ffffff;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+        
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid rgba(200, 16, 46, 0.3);
+            border-radius: 10px;
+            background: rgba(0,0,0,0.6);
+            color: #ffffff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #C8102E;
+            box-shadow: 0 0 0 3px rgba(200, 16, 46, 0.2);
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+        }
+        
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #a00d2a 0%, #8b0a23 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(200, 16, 46, 0.4);
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: rgba(255,255,255,0.3);
+        }
+
+
+
+        /* Orders Table */
+        .orders-table {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.3) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.2) 0%, rgba(0,0,0,0.4) 100%);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table-title {
+            color: #C8102E;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .table-stats {
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        th {
+            background: rgba(255,255,255,0.05);
+            color: #C8102E;
+            font-weight: 600;
+            font-size: 14px;
+            position: sticky;
+            top: 0;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .order-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #C8102E;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+            text-align: center;
+            min-width: 80px;
+        }
+
+        .status-new { background: rgba(52, 152, 219, 0.2); color: #3498db; }
+        .status-confirmed { background: rgba(46, 204, 113, 0.2); color: #2ecc71; }
+        .status-shipped { background: rgba(155, 89, 182, 0.2); color: #9b59b6; }
+        .status-delivered { background: rgba(39, 174, 96, 0.2); color: #27ae60; }
+        .status-cancelled { background: rgba(231, 76, 60, 0.2); color: #e74c3c; }
+
+        .order-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-btn.edit {
+            background: rgba(52, 152, 219, 0.2);
+            color: #3498db;
+        }
+
+        .action-btn.edit:hover {
+            background: #3498db;
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: rgba(231, 76, 60, 0.2);
+            color: #e74c3c;
+        }
+
+        .action-btn.delete:hover {
+            background: #e74c3c;
+            color: white;
+        }
+        
+        .status-dropdown {
+            display: inline-block;
+            margin-right: 10px;
+        }
+        
+        .status-select {
+            padding: 6px 12px;
+            border: 1px solid rgba(200, 16, 46, 0.3);
+            border-radius: 6px;
+            background: rgba(0,0,0,0.8);
+            color: #ffffff;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .status-select:focus {
+            outline: none;
+            border-color: #C8102E;
+            box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.2);
+        }
+        
+        .status-select option {
+            background: #000000;
+            color: #ffffff;
+        }
+
+        .city-code {
+            background: rgba(200, 16, 46, 0.1);
+            color: #C8102E;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid rgba(200, 16, 46, 0.2);
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            padding: 20px;
+        }
+
+        .page-btn {
+            padding: 10px 16px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(255,255,255,0.05);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover,
+        .page-btn.active {
+            background: #C8102E;
+            border-color: #C8102E;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .filters-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .bulk-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .bulk-actions-right {
+                justify-content: center;
+            }
+            
+            .table-container {
+                font-size: 12px;
+            }
+            
+            th, td {
+                padding: 8px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .filters-section,
+        .bulk-actions,
+        .orders-table {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .filters-section { animation-delay: 0.1s; }
+        .bulk-actions { animation-delay: 0.2s; }
+        .orders-table { animation-delay: 0.3s; }
+        
+        .alert {
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid transparent;
+        }
+        
+        .alert-warning {
+            background: rgba(253, 203, 110, 0.1);
+            border-color: rgba(253, 203, 110, 0.3);
+            color: #fdcb6e;
+        }
+        
+        .alert i {
+            margin-left: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+                </div>
+                <h2>نظام المبيعات</h2>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{{ url_for('invoices') }}" class="active"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="{{ url_for('employees') }}"><i class="fas fa-users"></i> الموظفين</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-boxes"></i> المخزون</a></li>
+                <li><a href="{{ url_for('customers') }}"><i class="fas fa-user-friends"></i> العملاء</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                {% if current_user.role == 'super_admin' or has_permission(current_user, 'users', 'view') %}
+                <li><a href="{{ url_for('users') }}"><i class="fas fa-user-shield"></i> إدارة المستخدمين</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Header Section -->
+            <div class="header-section">
+                <div>
+                    <h1 class="page-title">إدارة الطلبات</h1>
+                    <p style="color: #cccccc; margin-top: 5px;">عرض وإدارة جميع طلبات نظام المبيعات</p>
+                </div>
+                <div class="header-actions">
+                    <a href="{{ url_for('add_invoice') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i>
+                        إضافة طلب
+                    </a>
+                </div>
+            </div>
+
+
+
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <form method="GET" action="{{ url_for('invoices') }}">
+                    <div class="filters-grid">
+                        <div class="filter-group">
+                            <label for="date_filter">التاريخ</label>
+                            <input type="date" id="date_filter" name="date_filter" value="{{ request.args.get('date_filter', '') }}">
+                        </div>
+                        
+
+                        
+                        <div class="filter-group">
+                            <label for="employee_filter">الموظف</label>
+                            <select id="employee_filter" name="employee_filter">
+                                <option value="">جميع الموظفين</option>
+                                {% for employee in employees %}
+                                <option value="{{ employee.name }}" {{ 'selected' if request.args.get('employee_filter') == employee.name }}>
+                                    {{ employee.name }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <label for="city_filter">المحافظة</label>
+                            <select id="city_filter" name="city_filter">
+                                <option value="">جميع المحافظات</option>
+                                {% for city in cities %}
+                                <option value="{{ city }}" {{ 'selected' if request.args.get('city_filter') == city }}>
+                                    {{ city }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        
+                        <div class="filter-actions">
+                            <button type="submit" class="filter-btn primary">
+                                <i class="fas fa-search"></i>
+                                بحث
+                            </button>
+                            <a href="{{ url_for('invoices') }}" class="filter-btn">
+                                <i class="fas fa-undo"></i>
+                                إعادة تعيين
+                            </a>
+                            <button type="button" onclick="openExportDialog()" class="filter-btn export-btn">
+                                <i class="fas fa-download"></i>
+                                تصدير ونقل الطلبات
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+
+                    <!-- Flash Messages -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <div class="flash-messages">
+                    {% for category, message in messages %}
+                        <div class="flash-message {{ category }}">
+                            <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                            {{ message }}
+                            <button onclick="this.parentElement.remove()" class="flash-close">&times;</button>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
+        <!-- Orders Table -->
+        <div class="orders-table">
+            <div class="table-header">
+                <div class="table-title">قائمة الطلبات</div>
+                <div class="table-stats">
+                    إجمالي الطلبات: {{ invoices.total }} | 
+                    الصفحة {{ invoices.page }} من {{ invoices.pages }}
+                </div>
+            </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>العميل</th>
+                                <th>الهاتف</th>
+                                <th>المحافظة</th>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                                <th>الإجمالي</th>
+                                <th>الموظف</th>
+                                <th>الحالة</th>
+                                <th>العمولة</th>
+                                <th>التاريخ</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for invoice in invoices.items %}
+                            <tr>
+                                <td>{{ invoice.customer_name }}</td>
+                                <td>{{ invoice.phone }}</td>
+                                <td>
+                                    {{ invoice.city }}
+                                    <div class="city-code">{{ invoice.city_code }}</div>
+                                </td>
+                                <td>{{ invoice.product_name }}</td>
+                                <td>{{ invoice.quantity }}</td>
+                                <td>
+                                    <strong style="color: #00b894;">{{ "{:,.0f}".format(invoice.final_total) }}</strong>
+                                </td>
+                                <td>{{ invoice.employee_name }}</td>
+                                <td>{{ invoice.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <div class="order-actions">
+                                        <button onclick="deleteOrder({{ invoice.id }})" class="action-btn delete" title="حذف">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            {% if invoices.pages > 1 %}
+            <div class="pagination">
+                {% if invoices.has_prev %}
+                    <a href="{{ url_for('invoices', page=invoices.prev_num, date=request.args.get('date', ''), status=request.args.get('status', '')) }}" class="page-btn">
+                        <i class="fas fa-chevron-right"></i>
+                        السابق
+                    </a>
+                {% endif %}
+                
+                {% for page_num in invoices.iter_pages() %}
+                    {% if page_num %}
+                        {% if page_num != invoices.page %}
+                            <a href="{{ url_for('invoices', page=page_num, date=request.args.get('date', ''), status=request.args.get('status', '')) }}" class="page-btn">
+                                {{ page_num }}
+                            </a>
+                        {% else %}
+                            <span class="page-btn active">{{ page_num }}</span>
+                        {% endif %}
+                    {% else %}
+                        <span class="page-btn">...</span>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if invoices.has_next %}
+                    <a href="{{ url_for('invoices', page=invoices.next_num, date=request.args.get('date', ''), status=request.args.get('status', '')) }}" class="page-btn">
+                        التالي
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Export Dialog -->
+    <div id="exportModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>تصدير الطلبات</h2>
+                <span class="close" onclick="closeExportDialog()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="exportForm">
+                    <div class="form-group">
+                        <label for="exportDate">التاريخ:</label>
+                        <input type="date" id="exportDate" name="exportDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="exportFormat">صيغة الملف:</label>
+                        <select id="exportFormat" name="exportFormat" required>
+                            <option value="xlsx" selected>Excel (.xlsx)</option>
+                        </select>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" onclick="closeExportDialog()" class="btn btn-secondary">إلغاء</button>
+                        <button type="button" onclick="performExport()" class="btn btn-primary">تصدير</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+
+
+    <script>
+        // Select All Functionality
+        const selectAllHeader = document.getElementById('select-all-header');
+        const selectAllMain = document.getElementById('select-all');
+        const orderCheckboxes = document.querySelectorAll('.order-select');
+        const selectedCount = document.getElementById('selected-count');
+        const bulkActionsButtons = document.getElementById('bulk-actions-buttons');
+
+        function updateSelectedCount() {
+            const checkedBoxes = document.querySelectorAll('.order-select:checked');
+            const count = checkedBoxes.length;
+            selectedCount.textContent = `${count} طلب محدد`;
+            
+            if (count > 0) {
+                bulkActionsButtons.style.display = 'block';
+            } else {
+                bulkActionsButtons.style.display = 'none';
+            }
+        }
+
+        function selectAll(checked) {
+            orderCheckboxes.forEach(checkbox => {
+                checkbox.checked = checked;
+            });
+            updateSelectedCount();
+        }
+
+        selectAllHeader.addEventListener('change', function() {
+            selectAll(this.checked);
+            selectAllMain.checked = this.checked;
+        });
+
+        selectAllMain.addEventListener('change', function() {
+            selectAll(this.checked);
+            selectAllHeader.checked = this.checked;
+        });
+
+        orderCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedCount);
+        });
+
+        // Bulk Actions
+        function setBulkAction(action) {
+            document.getElementById('bulk-action').value = action;
+        }
+
+        // Confirm Delete
+        document.getElementById('bulk-form').addEventListener('submit', function(e) {
+            const action = document.getElementById('bulk-action').value;
+            if (action === 'delete') {
+                if (!confirm('هل أنت متأكد من حذف الطلبات المحددة؟')) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Initialize
+        updateSelectedCount();
+        
+        // Change Order Status
+        function changeOrderStatus(orderId, newStatus) {
+            if (confirm(`هل تريد تغيير حالة الطلب إلى: ${newStatus}؟`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/change_order_status/${orderId}`;
+                
+                const statusInput = document.createElement('input');
+                statusInput.type = 'hidden';
+                statusInput.name = 'status';
+                statusInput.value = newStatus;
+                
+                form.appendChild(statusInput);
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        
+        function deleteOrder(orderId) {
+            if (confirm('هل تريد حذف هذا الطلب؟')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/delete_order/${orderId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+        
+        // Export Dialog Functions
+        function openExportDialog() {
+            const modal = document.getElementById('exportModal');
+            const exportDate = document.getElementById('exportDate');
+            
+            // Set today's date as default
+            const today = new Date().toISOString().split('T')[0];
+            exportDate.value = today;
+            
+            modal.style.display = 'flex';
+        }
+        
+        function closeExportDialog() {
+            const modal = document.getElementById('exportModal');
+            modal.style.display = 'none';
+        }
+        
+        function performExport() {
+            const exportDate = document.getElementById('exportDate').value;
+            const exportFormat = document.getElementById('exportFormat').value;
+            
+            if (!exportDate) {
+                alert('الرجاء تحديد التاريخ');
+                return;
+            }
+            
+            // إظهار رسالة تأكيد
+            if (confirm(`هل تريد تصدير الطلبات لليوم ${exportDate} بصيغة ${exportFormat.toUpperCase()}؟\n\nسيتم تصدير جميع الطلبات لليوم المحدد مع الأعمدة المطلوبة.`)) {
+                // Create export URL
+                const exportUrl = `/export_orders_custom?date=${exportDate}&format=${exportFormat}`;
+                
+                // Show loading message
+                const exportBtn = document.querySelector('.export-btn');
+                const originalText = exportBtn.textContent;
+                exportBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري التصدير...';
+                exportBtn.disabled = true;
+                
+                // Perform export
+                window.location.href = exportUrl;
+                
+                // Reset button after a delay
+                setTimeout(() => {
+                    exportBtn.innerHTML = originalText;
+                    exportBtn.disabled = false;
+                    closeExportDialog();
+                    
+                    // إظهار نافذة منبثقة بعد التصدير
+                    if (confirm('✅ تم تصدير البيانات بنجاح!\n\nهل تريد نقل الطلبات إلى صفحة العملاء؟\n\n- في حال الموافقة: سيتم نقل جميع الطلبات بحالة "خارج للشحن"\n- في حال عدم الموافقة: ستبقى الطلبات كما هي')) {
+                        // نقل الطلبات إلى العملاء
+                        const transferUrl = `/transfer_orders_to_customers?date=${exportDate}`;
+                        window.location.href = transferUrl;
+                    }
+                }, 2000);
+            }
+        }
+        
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            const modal = document.getElementById('exportModal');
+            if (event.target == modal) {
+                closeExportDialog();
+            }
+        }
+
+
+    </script>
+</body>
+</html>

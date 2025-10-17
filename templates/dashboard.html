@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - لوحة التحكم الرئيسية</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            padding: 20px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #C8102E;
+        }
+
+                 .logo-icon {
+             width: 120px;
+             height: 120px;
+             margin-bottom: 20px;
+             display: flex;
+             align-items: center;
+             justify-content: center;
+             margin: 0 auto 20px auto;
+         }
+         
+         .logo-icon img {
+             width: 100%;
+             height: 100%;
+             object-fit: contain;
+         }
+
+        .logo-section h2 {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu a:hover {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .nav-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(0,0,0,0.3) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(200, 16, 46, 0.2);
+        }
+
+        .welcome-text h1 {
+            font-size: 32px;
+            color: #C8102E;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(200, 16, 46, 0.3);
+        }
+
+        .welcome-text p {
+            color: #cccccc;
+            font-size: 16px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: white;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.3) 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #C8102E, #ff6b6b);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(200, 16, 46, 0.2);
+            border-color: rgba(200, 16, 46, 0.3);
+        }
+
+        .stat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-icon.orders { background: linear-gradient(135deg, #C8102E, #ff6b6b); }
+        .stat-icon.revenue { background: linear-gradient(135deg, #00b894, #00cec9); }
+        .stat-icon.employees { background: linear-gradient(135deg, #0984e3, #74b9ff); }
+        .stat-icon.products { background: linear-gradient(135deg, #fdcb6e, #e17055); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+
+        .stat-change.positive { color: #00b894; }
+        .stat-change.negative { color: #e17055; }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .chart-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.3) 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .chart-title {
+            font-size: 20px;
+            color: #C8102E;
+            font-weight: bold;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 10px;
+        }
+
+        .chart-btn {
+            padding: 8px 16px;
+            border: 1px solid rgba(200, 16, 46, 0.3);
+            background: transparent;
+            color: #C8102E;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .chart-btn:hover, .chart-btn.active {
+            background: #C8102E;
+            color: white;
+        }
+
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+
+        /* Quick Actions */
+        .quick-actions {
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(0,0,0,0.3) 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(200, 16, 46, 0.2);
+            margin-bottom: 40px;
+        }
+
+        .quick-actions h3 {
+            color: #C8102E;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .action-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 15px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .action-btn:hover {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(200, 16, 46, 0.3);
+        }
+
+        .action-btn i {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #C8102E;
+        }
+
+        .action-btn:hover i {
+            color: white;
+        }
+
+        /* Recent Activity */
+        .recent-activity {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.3) 100%);
+            padding: 25px;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .activity-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .activity-title {
+            color: #C8102E;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #C8102E, #ff6b6b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 15px;
+            font-size: 16px;
+            color: white;
+        }
+
+        .activity-content {
+            flex: 1;
+        }
+
+        .activity-text {
+            color: #ffffff;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            color: #cccccc;
+            font-size: 12px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                position: fixed;
+                left: -100%;
+                top: 0;
+                z-index: 1000;
+                transition: left 0.3s ease;
+            }
+            
+            .sidebar.active {
+                left: 0;
+            }
+            
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .actions-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .stat-card, .chart-card, .quick-actions, .recent-activity {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .stat-card:nth-child(1) { animation-delay: 0.1s; }
+        .stat-card:nth-child(2) { animation-delay: 0.2s; }
+        .stat-card:nth-child(3) { animation-delay: 0.3s; }
+        .stat-card:nth-child(4) { animation-delay: 0.4s; }
+        
+        /* Flash Messages */
+        .flash-messages {
+            margin-bottom: 20px;
+            padding: 0 20px;
+        }
+        
+        .flash-message {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            font-weight: 500;
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+        
+        .flash-message.success {
+            background: linear-gradient(135deg, #00aa00, #44ff44);
+            color: #ffffff;
+            border: 1px solid #00aa00;
+        }
+        
+        .flash-message.error {
+            background: linear-gradient(135deg, #ff4444, #cc0000);
+            color: #ffffff;
+            border: 1px solid #ff4444;
+        }
+        
+        .flash-message.warning {
+            background: linear-gradient(135deg, #ffaa00, #ffcc44);
+            color: #ffffff;
+            border: 1px solid #ffaa00;
+        }
+        
+        .flash-close {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 18px;
+            cursor: pointer;
+            opacity: 0.8;
+        }
+        
+        .flash-close:hover {
+            opacity: 1;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                                 <div class="logo-icon">
+                     <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+                 </div>
+                <h2>نظام المبيعات</h2>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}" class="active"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{{ url_for('invoices') }}"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="{{ url_for('employees') }}"><i class="fas fa-users"></i> الموظفين</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-boxes"></i> المخزون</a></li>
+                <li><a href="{{ url_for('customers') }}"><i class="fas fa-user-friends"></i> العملاء</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                {% if current_user.role == 'super_admin' or has_permission(current_user, 'users', 'view') %}
+                <li><a href="{{ url_for('users') }}"><i class="fas fa-user-shield"></i> إدارة المستخدمين</a></li>
+                {% endif %}
+                                 
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">
+                                <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                                {{ message }}
+                                <button onclick="this.parentElement.remove()" class="flash-close">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Header Section -->
+            <div class="header-section">
+                <div class="welcome-text">
+                    <h1>مرحباً بك في نظام المبيعات</h1>
+                    <p>لوحة التحكم الرئيسية - نظرة شاملة على أداء الشركة</p>
+                </div>
+                <div class="user-info">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div>
+                        <div style="color: #C8102E; font-weight: bold;">{{ current_user.username }}</div>
+                        <div style="color: #cccccc; font-size: 12px;">مدير النظام</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">{{ today_invoices }}</div>
+                            <div class="stat-label">طلبات اليوم</div>
+                        </div>
+                        <div class="stat-icon orders">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +12% من أمس
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">{{ "{:,.0f}".format(today_total) }}</div>
+                            <div class="stat-label">إجمالي المبيعات (د.ع)</div>
+                        </div>
+                        <div class="stat-icon revenue">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                    </div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +8% من أمس
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">{{ employees_count }}</div>
+                            <div class="stat-label">الموظفين النشطين</div>
+                        </div>
+                        <div class="stat-icon employees">
+                            <i class="fas fa-users"></i>
+                        </div>
+                    </div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +2 هذا الشهر
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-header">
+                        <div>
+                            <div class="stat-value">{{ products_count }}</div>
+                            <div class="stat-label">المخزون المتوفر</div>
+                        </div>
+                        <div class="stat-icon products">
+                            <i class="fas fa-box"></i>
+                        </div>
+                    </div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i>
+                        +5 هذا الأسبوع
+                    </div>
+                </div>
+            </div>
+
+                         <!-- Charts Section -->
+             <div class="charts-section">
+                 <div class="chart-card">
+                     <div class="chart-header">
+                         <div class="chart-title">تحليل المبيعات الأسبوعية</div>
+                         <div class="chart-controls">
+                             <button class="chart-btn active" data-period="7">7 أيام</button>
+                             <button class="chart-btn" data-period="30">30 يوم</button>
+                             <button class="chart-btn" data-period="90">90 يوم</button>
+                         </div>
+                     </div>
+                     <div class="chart-container">
+                         <canvas id="salesChart"></canvas>
+                     </div>
+                 </div>
+
+                 <div class="chart-card">
+                     <div class="chart-header">
+                         <div class="chart-title">توزيع المبيعات حسب المنتج</div>
+                     </div>
+                     <div class="chart-container">
+                         <canvas id="productChart"></canvas>
+                     </div>
+                 </div>
+             </div>
+
+            <!-- Quick Actions -->
+            <div class="quick-actions">
+                <h3>إجراءات سريعة</h3>
+                <div class="actions-grid">
+                                         <a href="{{ url_for('add_invoice') }}" class="action-btn">
+                        <i class="fas fa-plus"></i>
+                        <span>إضافة طلب جديد</span>
+                    </a>
+                                         <a href="{{ url_for('invoices') }}" class="action-btn">
+                        <i class="fas fa-download"></i>
+                        <span>تصدير اليوم</span>
+                    </a>
+                    <a href="{{ url_for('employees') }}" class="action-btn">
+                        <i class="fas fa-user-plus"></i>
+                        <span>إضافة موظف</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="recent-activity">
+                <div class="activity-header">
+                    <div class="activity-title">النشاطات الأخيرة</div>
+                    <a href="#" style="color: #C8102E; text-decoration: none; font-size: 14px;">عرض الكل</a>
+                </div>
+                                 <ul class="activity-list">
+                     {% if recent_activities %}
+                         {% for activity in recent_activities %}
+                         <li class="activity-item">
+                             <div class="activity-icon">
+                                 <i class="fas fa-{{ activity.icon }}"></i>
+                             </div>
+                             <div class="activity-content">
+                                 <div class="activity-text">{{ activity.text }}</div>
+                                 <div class="activity-time">{{ activity.time }}</div>
+                             </div>
+                         </li>
+                         {% endfor %}
+                     {% else %}
+                         <li class="activity-item">
+                             <div class="activity-icon">
+                                 <i class="fas fa-info-circle"></i>
+                             </div>
+                             <div class="activity-content">
+                                 <div class="activity-text">لا توجد نشاطات حديثة</div>
+                                 <div class="activity-time">ابدأ بإضافة طلبات جديدة</div>
+                             </div>
+                         </li>
+                     {% endif %}
+                 </ul>
+            </div>
+        </div>
+    </div>
+
+         <script>
+         // بيانات الرسوم البيانية من الخادم
+         const weekData = {{ week_data | tojson | safe }};
+         const productDistribution = {{ product_distribution | tojson | safe }};
+         
+         // Sales Chart
+         const salesCtx = document.getElementById('salesChart').getContext('2d');
+         const salesChart = new Chart(salesCtx, {
+             type: 'line',
+             data: {
+                 labels: weekData.map(item => item.date),
+                 datasets: [{
+                     label: 'المبيعات (دينار)',
+                     data: weekData.map(item => item.total),
+                     borderColor: '#C8102E',
+                     backgroundColor: 'rgba(200, 16, 46, 0.1)',
+                     borderWidth: 3,
+                     fill: true,
+                     tension: 0.4,
+                     pointBackgroundColor: '#C8102E',
+                     pointBorderColor: '#ffffff',
+                     pointBorderWidth: 2,
+                     pointRadius: 6
+                 }]
+             },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        },
+                        ticks: {
+                            color: '#cccccc'
+                        }
+                    },
+                    x: {
+                        grid: {
+                            color: 'rgba(255,255,255,0.1)'
+                        },
+                        ticks: {
+                            color: '#cccccc'
+                        }
+                    }
+                }
+            }
+        });
+
+                 // Product Distribution Chart
+         const productCtx = document.getElementById('productChart').getContext('2d');
+         const productChart = new Chart(productCtx, {
+             type: 'doughnut',
+             data: {
+                 labels: productDistribution.map(item => item.name),
+                 datasets: [{
+                     data: productDistribution.map(item => item.count),
+                     backgroundColor: [
+                         '#C8102E',
+                         '#00b894',
+                         '#0984e3',
+                         '#fdcb6e',
+                         '#0984e3'
+                     ],
+                     borderWidth: 0,
+                     hoverOffset: 4
+                 }]
+             },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            color: '#cccccc',
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+
+        // Chart Controls
+        document.querySelectorAll('.chart-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.chart-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                // هنا يمكن إضافة منطق لتحديث البيانات حسب الفترة المختارة
+                console.log('تم اختيار الفترة:', this.textContent);
+            });
+        });
+
+        // Quick Actions Hover Effects
+        document.querySelectorAll('.action-btn').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-5px) scale(1.02)';
+            });
+            
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Stats Cards Animation
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.stat-card, .chart-card, .quick-actions, .recent-activity').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Responsive Sidebar Toggle
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Add mobile menu button if needed
+        if (window.innerWidth <= 1024) {
+            const header = document.querySelector('.header-section');
+            const toggleBtn = document.createElement('button');
+            toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            toggleBtn.style.cssText = `
+                background: #C8102E;
+                border: none;
+                color: white;
+                padding: 10px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 18px;
+            `;
+            toggleBtn.onclick = toggleSidebar;
+            header.appendChild(toggleBtn);
+        }
+    </script>
+</body>
+</html>

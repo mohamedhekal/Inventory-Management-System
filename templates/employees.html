@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - الموظفين</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            padding: 20px;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #C8102E;
+        }
+
+        .logo-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-section h2 {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-menu a:hover {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .nav-menu a.active {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border-color: #C8102E;
+        }
+
+        .nav-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .content-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(200, 16, 46, 0.2);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #C8102E, #ff4444);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 24px;
+            color: #ffffff;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #C8102E;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        /* Charts Section */
+        .charts-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .chart-container {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .chart-title {
+            color: #C8102E;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* Date Filter */
+        .date-filter {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+
+        .filter-form {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            color: #cccccc;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        /* Table */
+        .table-container {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: rgba(200, 16, 46, 0.2);
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+            color: #C8102E;
+            border-bottom: 2px solid rgba(200, 16, 46, 0.3);
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .table tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .pay-btn {
+            background: #28a745;
+            color: white;
+        }
+
+        .pay-btn:hover {
+            background: #20c997;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .edit-btn:hover {
+            background: #e0a800;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .charts-section {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+                </div>
+                <h2>نظام المبيعات</h2>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{{ url_for('invoices') }}"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="{{ url_for('employees') }}" class="active"><i class="fas fa-users"></i> الموظفين</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-boxes"></i> المخزون</a></li>
+                <li><a href="{{ url_for('customers') }}"><i class="fas fa-user-friends"></i> العملاء</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                {% if current_user.role == 'super_admin' or has_permission(current_user, 'users', 'view') %}
+                <li><a href="{{ url_for('users') }}"><i class="fas fa-user-shield"></i> إدارة المستخدمين</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-users"></i> إدارة الموظفين</h1>
+                    <div class="header-actions">
+                        <a href="{{ url_for('add_employee') }}" class="btn btn-primary">
+                            <i class="fas fa-plus"></i>
+                            إضافة موظف
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <!-- إحصائيات سريعة -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-value">{{ employees|length }}</div>
+                        <div class="stat-label">إجمالي الموظفين</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                        <div class="stat-value">{{ total_orders }}</div>
+                        <div class="stat-label">إجمالي الطلبات</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="stat-value">{{ "{:,.2f}".format(total_commission or 0) }} دينار</div>
+                        <div class="stat-label">إجمالي العمولة</div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-value">{{ "{:,.1f}".format(avg_commission_per_employee or 0) }}</div>
+                        <div class="stat-label">متوسط العمولة/موظف</div>
+                    </div>
+                </div>
+
+                <!-- فلاتر التاريخ -->
+                <div class="date-filter">
+                    <form class="filter-form" onsubmit="filterByDate(event)">
+                        <div class="filter-group">
+                            <label>من تاريخ:</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <div class="filter-group">
+                            <label>إلى تاريخ:</label>
+                            <input type="date" id="endDate" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter"></i>
+                            فلترة
+                        </button>
+                        <button type="button" class="btn btn-success" onclick="resetFilters()">
+                            <i class="fas fa-refresh"></i>
+                            إعادة تعيين
+                        </button>
+                    </form>
+                </div>
+
+                <!-- الرسوم البيانية -->
+                <div class="charts-section">
+                    <div class="chart-container">
+                        <div class="chart-title">أداء الموظفين</div>
+                        <canvas id="performanceChart" width="400" height="200"></canvas>
+                    </div>
+
+                    <div class="chart-container">
+                        <div class="chart-title">توزيع العمولة</div>
+                        <canvas id="commissionChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+
+                <!-- جدول الموظفين -->
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>اسم الموظف</th>
+                                <th>رقم الهاتف</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>القسم</th>
+                                <th>المنصب</th>
+                                <th>الراتب الأساسي</th>
+                                <th>إجمالي الطلبات</th>
+                                <th>إجمالي العمولة</th>
+                                <th>آخر تحديث</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for employee in employees %}
+                            <tr>
+                                <td>{{ employee.name }}</td>
+                                <td>{{ employee.phone or 'غير محدد' }}</td>
+                                <td>{{ employee.email or 'غير محدد' }}</td>
+                                <td>{{ employee.department or 'غير محدد' }}</td>
+                                <td>{{ employee.position or 'غير محدد' }}</td>
+                                <td>{{ "{:,.2f}".format(employee.base_salary or 0) }} دينار</td>
+                                <td>{{ employee.total_orders or 0 }}</td>
+                                <td>{{ "{:,.2f}".format(employee.total_commission or 0) }} دينار</td>
+                                <td>{{ employee.hire_date.strftime('%Y-%m-%d') if employee.hire_date else 'غير محدد' }}
+                                </td>
+                                <td>
+                                    <button class="action-btn pay-btn" onclick="payCommission({{ employee.id }})">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        دفع المستحقات
+                                    </button>
+                                    <button class="action-btn edit-btn" onclick="editEmployee({{ employee.id }})">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" onclick="deleteEmployee({{ employee.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // تهيئة الرسوم البيانية
+        document.addEventListener('DOMContentLoaded', function () {
+            initializeCharts();
+        });
+
+        function initializeCharts() {
+            // رسم بياني لأداء الموظفين
+            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(performanceCtx, {
+                type: 'bar',
+                data: {
+                    labels: {{ employees| map(attribute = 'name') | list | tojson }},
+        datasets: [{
+            label: 'عدد الطلبات',
+            data: {{ employees| map(attribute = 'total_orders') | list | tojson }},
+            backgroundColor: 'rgba(200, 16, 46, 0.8)',
+            borderColor: '#C8102E',
+            borderWidth: 2
+                    }]
+                },
+        options: {
+            responsive: true,
+                plugins: {
+                legend: {
+                    labels: { color: '#ffffff' }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                        ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                },
+                x: {
+                    ticks: { color: '#ffffff' },
+                    grid: { color: 'rgba(255,255,255,0.1)' }
+                }
+            }
+        }
+            });
+
+        // رسم بياني لتوزيع العمولة
+        const commissionCtx = document.getElementById('commissionChart').getContext('2d');
+        new Chart(commissionCtx, {
+            type: 'doughnut',
+            data: {
+                labels: {{ employees| map(attribute = 'name') | list | tojson }},
+            datasets: [{
+                data: {{ employees| map(attribute = 'total_commission') | list | tojson }},
+            backgroundColor: [
+                '#C8102E', '#ff4444', '#ff6b6b', '#ff8e8e',
+                '#ffb3b3', '#ffd6d6', '#ffe6e6', '#fff0f0'
+            ],
+            borderColor: '#ffffff',
+            borderWidth: 2
+                    }]
+                },
+            options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#ffffff' }
+                }
+            }
+        }
+            });
+        }
+
+        // دفع المستحقات
+        function payCommission(employeeId) {
+            if (confirm('هل أنت متأكد من دفع المستحقات لهذا الموظف؟')) {
+                fetch(`/pay_employee_commission/${employeeId}`, {
+                    method: 'POST'
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            alert(data.message);
+                            location.reload();
+                        } else {
+                            alert('حدث خطأ: ' + data.error);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('خطأ:', error);
+                        alert('حدث خطأ أثناء دفع المستحقات');
+                    });
+            }
+        }
+
+        // فلترة حسب التاريخ
+        function filterByDate(event) {
+            event.preventDefault();
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+
+            if (!startDate || !endDate) {
+                alert('يرجى تحديد تاريخ البداية والنهاية');
+                return;
+            }
+
+            // يمكن إضافة منطق الفلترة هنا
+            console.log('فلترة من', startDate, 'إلى', endDate);
+        }
+
+        // إعادة تعيين الفلاتر
+        function resetFilters() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+        }
+
+        // تعديل موظف
+        function editEmployee(employeeId) {
+            // يمكن إضافة منطق التعديل هنا
+            alert('سيتم إضافة صفحة تعديل الموظف قريباً');
+        }
+
+        // حذف موظف
+        function deleteEmployee(employeeId) {
+            if (confirm('هل أنت متأكد من حذف هذا الموظف؟')) {
+                // يمكن إضافة منطق الحذف هنا
+                alert('سيتم إضافة منطق حذف الموظف قريباً');
+            }
+        }
+    </script>
+
+    <!-- ملف JavaScript لصفحة الموظفين -->
+    <script src="{{ url_for('static', filename='js/employees.js') }}"></script>
+</body>
+
+</html>

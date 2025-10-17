@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - إضافة موظف</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            padding: 20px;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #C8102E;
+        }
+
+        .logo-icon {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-section h2 {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-menu a:hover,
+        .nav-menu a.active {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .nav-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* Form Styles */
+        .top-header {
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(0, 0, 0, 0.3) 100%);
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(200, 16, 46, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            color: #C8102E;
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(200, 16, 46, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(108, 117, 125, 0.4);
+        }
+
+        .content-wrapper {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(0, 0, 0, 0.3) 100%);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .employee-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #C8102E;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #C8102E;
+            box-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: #888888;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+                </div>
+                <h2>نظام المبيعات</h2>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{{ url_for('invoices') }}"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="{{ url_for('employees') }}" class="active"><i class="fas fa-users"></i> الموظفين</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-boxes"></i> المخزون</a></li>
+                <li><a href="{{ url_for('customers') }}"><i class="fas fa-user-friends"></i> العملاء</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                {% if current_user.role == 'super_admin' or has_permission(current_user, 'users', 'view') %}
+                <li><a href="{{ url_for('users') }}"><i class="fas fa-user-shield"></i> إدارة المستخدمين</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-header">
+                <div class="header-content">
+                    <h1>إضافة موظف جديد</h1>
+                    <div class="header-actions">
+                        <a href="{{ url_for('employees') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-right"></i>
+                            العودة للموظفين
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="form-container">
+                    <form method="POST" class="employee-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">اسم الموظف *</label>
+                                <input type="text" name="name" id="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">رقم الهاتف</label>
+                                <input type="tel" name="phone" id="phone">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">البريد الإلكتروني</label>
+                                <input type="email" name="email" id="email">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="department">القسم</label>
+                                <input type="text" name="department" id="department">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="position">المنصب</label>
+                                <input type="text" name="position" id="position">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="salary">الراتب الأساسي (دينار) *</label>
+                                <input type="number" name="salary" id="salary" min="0" step="0.01" value="500000"
+                                    required>
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="commission_per_order">عمولة الطلب (دينار) *</label>
+                                <input type="number" name="commission_per_order" id="commission_per_order" min="0"
+                                    step="0.01" value="0.5" required>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                حفظ الموظف
+                            </button>
+                            <a href="{{ url_for('employees') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i>
+                                إلغاء
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/add_employee.js') }}"></script>
+</body>
+
+</html>

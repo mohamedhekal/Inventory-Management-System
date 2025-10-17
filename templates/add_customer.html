@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - إضافة عميل</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            padding: 20px;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #C8102E;
+        }
+
+        .logo-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-section h2 {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-menu a:hover {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .nav-menu a.active {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border-color: #C8102E;
+        }
+
+        .nav-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .content-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .form-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .customer-form {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: #cccccc;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 12px 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #C8102E;
+            box-shadow: 0 0 0 2px rgba(200, 16, 46, 0.2);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+                </div>
+                <h2>نظام المبيعات</h2>
+            </div>
+
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{{ url_for('invoices') }}"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="{{ url_for('employees') }}"><i class="fas fa-users"></i> الموظفين</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-boxes"></i> المخزون</a></li>
+                <li><a href="{{ url_for('customers') }}" class="active"><i class="fas fa-user-friends"></i> العملاء</a>
+                </li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                {% if current_user.role == 'super_admin' or has_permission(current_user, 'users', 'view') %}
+                <li><a href="{{ url_for('users') }}"><i class="fas fa-user-shield"></i> إدارة المستخدمين</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-user-plus"></i> إضافة عميل جديد</h1>
+                    <div class="header-actions">
+                        <a href="{{ url_for('customers') }}" class="btn btn-secondary">
+                            <i class="fas fa-arrow-right"></i>
+                            العودة للعملاء
+                        </a>
+                    </div>
+                </div>
+            </header>
+
+            <div class="content-wrapper">
+                <div class="form-container">
+                    <form method="POST" class="customer-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="name">اسم العميل *</label>
+                                <input type="text" name="name" id="name" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="phone">رقم الهاتف</label>
+                                <input type="tel" name="phone" id="phone">
+                            </div>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="email">البريد الإلكتروني</label>
+                                <input type="email" name="email" id="email">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="city">المحافظة</label>
+                                <input type="text" name="city" id="city">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="address">العنوان</label>
+                            <textarea name="address" id="address" rows="3"></textarea>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                حفظ العميل
+                            </button>
+                            <a href="{{ url_for('customers') }}" class="btn btn-secondary">
+                                <i class="fas fa-times"></i>
+                                إلغاء
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+
+</html>

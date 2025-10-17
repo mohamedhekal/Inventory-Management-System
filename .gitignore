@@ -1,0 +1,68 @@
+# ملفات Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# ملفات البيئة
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# قاعدة البيانات
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+
+# ملفات التصدير
+exports/*.xls
+exports/*.xlsx
+
+# النسخ الاحتياطية
+backups/
+
+# ملفات المستخدمين
+users.json
+
+# ملفات النظام
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ملفات IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# ملفات السجلات
+*.log
+logs/
+
+# ملفات مؤقتة
+*.tmp
+*.temp
+temp/
+tmp/

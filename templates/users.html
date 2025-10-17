@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - إدارة المستخدمين</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            padding: 20px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #C8102E;
+        }
+
+        .logo-icon {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px auto;
+        }
+        
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-section h2 {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu a:hover, .nav-menu a.active {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .nav-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 40px;
+            padding: 20px;
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.1) 0%, rgba(0,0,0,0.3) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(200, 16, 46, 0.2);
+        }
+
+        .page-title h1 {
+            font-size: 32px;
+            color: #C8102E;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(200, 16, 46, 0.3);
+        }
+
+        .page-title p {
+            color: #cccccc;
+            font-size: 16px;
+        }
+
+        .add-button {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .add-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(200, 16, 46, 0.4);
+            color: white;
+        }
+
+        /* Flash Messages */
+        .flash-messages {
+            margin-bottom: 20px;
+        }
+
+        .flash-message {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+        }
+
+        .flash-message.success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .flash-message.error {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .flash-message.warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #212529;
+        }
+
+        .flash-close {
+            background: none;
+            border: none;
+            color: inherit;
+            font-size: 20px;
+            cursor: pointer;
+            margin-right: auto;
+        }
+
+        /* Users Table */
+        .users-table {
+            background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(0,0,0,0.3) 100%);
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, rgba(200, 16, 46, 0.2) 0%, rgba(0,0,0,0.4) 100%);
+            padding: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table-header h2 {
+            color: #C8102E;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .table-header p {
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 15px 20px;
+            text-align: right;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        th {
+            background: rgba(200, 16, 46, 0.1);
+            color: #C8102E;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            color: white;
+            margin-left: 10px;
+        }
+
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .status-active {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .status-inactive {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            color: white;
+        }
+
+        .role-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .role-super-admin {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .role-admin {
+            background: linear-gradient(135deg, #fd7e14 0%, #e55a00 100%);
+            color: white;
+        }
+
+        .role-user {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            color: white;
+        }
+
+        .btn-edit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(23, 162, 184, 0.4);
+            color: white;
+        }
+
+        .btn-permissions {
+            background: linear-gradient(135deg, #6f42c1 0%, #5a32a3 100%);
+            color: white;
+        }
+
+        .btn-permissions:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(111, 66, 193, 0.4);
+            color: white;
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-delete:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.4);
+            color: white;
+        }
+
+        .btn-delete:disabled {
+            background: #6c757d;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .header-section {
+                flex-direction: column;
+                gap: 20px;
+                text-align: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+                </div>
+                <h2>نظام المبيعات</h2>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{{ url_for('invoices') }}"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="{{ url_for('employees') }}"><i class="fas fa-users"></i> الموظفين</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-boxes"></i> المخزون</a></li>
+                <li><a href="{{ url_for('customers') }}"><i class="fas fa-user-friends"></i> العملاء</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                <li><a href="{{ url_for('users') }}" class="active"><i class="fas fa-user-shield"></i> إدارة المستخدمين</a></li>
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Flash Messages -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="flash-messages">
+                        {% for category, message in messages %}
+                            <div class="flash-message {{ category }}">
+                                <i class="fas fa-{% if category == 'success' %}check-circle{% elif category == 'error' %}exclamation-circle{% else %}info-circle{% endif %}"></i>
+                                {{ message }}
+                                <button onclick="this.parentElement.remove()" class="flash-close">&times;</button>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Header Section -->
+            <div class="header-section">
+                <div class="page-title">
+                    <h1>إدارة المستخدمين</h1>
+                    <p>إدارة حسابات المستخدمين وصلاحياتهم في النظام</p>
+                </div>
+                {% if has_permission(current_user, 'users', 'add') %}
+                <a href="{{ url_for('add_user') }}" class="add-button">
+                    <i class="fas fa-plus"></i>
+                    إضافة مستخدم جديد
+                </a>
+                {% endif %}
+            </div>
+
+            <!-- Users Table -->
+            <div class="users-table">
+                <div class="table-header">
+                    <h2>قائمة المستخدمين</h2>
+                    <p>إجمالي المستخدمين: {{ users|length }}</p>
+                </div>
+                
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>المستخدم</th>
+                                <th>الاسم الكامل</th>
+                                <th>البريد الإلكتروني</th>
+                                <th>الدور</th>
+                                <th>الموظف المرتبط</th>
+                                <th>الحالة</th>
+                                <th>آخر دخول</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for user in users %}
+                            <tr>
+                                <td>
+                                    <div style="display: flex; align-items: center;">
+                                        <div class="user-avatar">
+                                            <i class="fas fa-user"></i>
+                                        </div>
+                                        <span>{{ user.username }}</span>
+                                    </div>
+                                </td>
+                                <td>{{ user.full_name or 'غير محدد' }}</td>
+                                <td>{{ user.email or 'غير محدد' }}</td>
+                                <td>
+                                    <span class="role-badge role-{{ user.role }}">
+                                        {% if user.role == 'super_admin' %}
+                                            مدير عام
+                                        {% elif user.role == 'admin' %}
+                                            مدير
+                                        {% else %}
+                                            مستخدم
+                                        {% endif %}
+                                    </span>
+                                </td>
+                                <td>{{ user.employee.name if user.employee else 'غير مرتبط' }}</td>
+                                <td>
+                                    <span class="status-badge {% if user.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                        {% if user.is_active %}نشط{% else %}معطل{% endif %}
+                                    </span>
+                                </td>
+                                <td>{{ user.last_login.strftime('%Y-%m-%d %H:%M') if user.last_login else 'لم يسجل دخول' }}</td>
+                                <td>
+                                    <div class="action-buttons">
+                                        {% if has_permission(current_user, 'users', 'edit') %}
+                                        <a href="{{ url_for('edit_user', user_id=user.id) }}" class="btn btn-edit">
+                                            <i class="fas fa-edit"></i>
+                                            تعديل
+                                        </a>
+                                        {% endif %}
+                                        
+                                        {% if has_permission(current_user, 'users', 'permissions') %}
+                                        <a href="{{ url_for('user_permissions', user_id=user.id) }}" class="btn btn-permissions">
+                                            <i class="fas fa-key"></i>
+                                            الصلاحيات
+                                        </a>
+                                        {% endif %}
+                                        
+                                        {% if has_permission(current_user, 'users', 'delete') and user.role != 'super_admin' %}
+                                        <button onclick="deleteUser({{ user.id }}, '{{ user.username }}')" class="btn btn-delete">
+                                            <i class="fas fa-trash"></i>
+                                            حذف
+                                        </button>
+                                        {% endif %}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function deleteUser(userId, username) {
+            if (confirm(`هل أنت متأكد من حذف المستخدم "${username}"؟`)) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/users/delete/${userId}`;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        }
+    </script>
+</body>
+</html>

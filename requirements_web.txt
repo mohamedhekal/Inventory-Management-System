@@ -1,0 +1,11 @@
+Flask==2.3.3
+Flask-SQLAlchemy==3.0.5
+Flask-Login==0.6.3
+Werkzeug==2.3.7
+pandas==2.1.4
+openpyxl==3.1.2
+xlrd==2.0.1
+# xlsxtools==0.2.0  # لم تعد مطلوبة
+python-telegram-bot==20.7
+python-dotenv==1.0.0
+APScheduler==3.10.4

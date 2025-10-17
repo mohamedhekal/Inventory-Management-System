@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>نظام المبيعات - العملاء</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            background: linear-gradient(180deg, #000000 0%, #1a1a1a 100%);
+            padding: 20px;
+            box-shadow: 4px 0 20px rgba(0,0,0,0.3);
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .logo-section {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 20px 0;
+            border-bottom: 2px solid #C8102E;
+        }
+
+        .logo-icon {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 20px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .logo-section h2 {
+            color: #C8102E;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(200, 16, 46, 0.3);
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-menu li {
+            margin-bottom: 10px;
+        }
+
+        .nav-menu a {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .nav-menu a:hover {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            transform: translateX(-5px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .nav-menu a.active {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border-color: #C8102E;
+        }
+
+        .nav-menu i {
+            margin-left: 15px;
+            font-size: 18px;
+            width: 20px;
+        }
+
+        /* Main Content */
+        .main-content {
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            background: rgba(255,255,255,0.05);
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            color: #ffffff;
+            font-size: 28px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(200, 16, 46, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+            color: white;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #e0a800 100%);
+            color: #000;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #c82333 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .content-wrapper {
+            background: rgba(255,255,255,0.05);
+            border-radius: 15px;
+            padding: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Quick Stats */
+        .quick-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: rgba(255,255,255,0.08);
+            padding: 25px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #C8102E 0%, #a00d2a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px auto;
+            font-size: 24px;
+            color: white;
+        }
+
+        .stat-number {
+            display: block;
+            font-size: 28px;
+            font-weight: bold;
+            color: #C8102E;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #cccccc;
+            font-size: 14px;
+        }
+
+        /* Filters */
+        .filters-section {
+            background: rgba(255,255,255,0.05);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .search-box {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: #999;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .filter-controls select {
+            padding: 10px 15px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            color: white;
+            font-size: 14px;
+            min-width: 150px;
+        }
+
+        /* Table */
+        .table-container {
+            background: rgba(255,255,255,0.05);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th {
+            background: rgba(200, 16, 46, 0.2);
+            padding: 15px;
+            text-align: right;
+            font-weight: 600;
+            color: #C8102E;
+            border-bottom: 2px solid rgba(200, 16, 46, 0.3);
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .table tr:hover {
+            background: rgba(255,255,255,0.05);
+        }
+
+        .action-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0 5px;
+        }
+
+        .edit-btn {
+            background: #ffc107;
+            color: #000;
+        }
+
+        .edit-btn:hover {
+            background: #e0a800;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+        }
+
+        .delete-btn:hover {
+            background: #c82333;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-delivered {
+            background: rgba(40, 167, 69, 0.2);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.3);
+        }
+
+                 .status-not-received {
+             background: rgba(220, 53, 69, 0.2);
+             color: #dc3545;
+             border: 1px solid rgba(220, 53, 69, 0.3);
+         }
+         
+         .status-shipping {
+             background: rgba(255, 193, 7, 0.2);
+             color: #ffc107;
+             border: 1px solid rgba(255, 193, 7, 0.3);
+         }
+         
+         /* Selection Controls */
+         .selection-controls {
+             margin-top: 20px;
+             padding: 15px;
+             background: rgba(255,255,255,0.03);
+             border-radius: 8px;
+             border: 1px solid rgba(255,255,255,0.1);
+         }
+         
+         .select-all-section {
+             display: flex;
+             align-items: center;
+             gap: 15px;
+             margin-bottom: 15px;
+         }
+         
+         .select-all-section label {
+             display: flex;
+             align-items: center;
+             gap: 8px;
+             cursor: pointer;
+             color: #cccccc;
+         }
+         
+         .select-all-section input[type="checkbox"] {
+             width: 18px;
+             height: 18px;
+             cursor: pointer;
+         }
+         
+         #selectedCount {
+             color: #C8102E;
+             font-weight: 600;
+         }
+         
+         .bulk-actions {
+             display: flex;
+             gap: 10px;
+             flex-wrap: wrap;
+         }
+         
+         .bulk-actions .btn {
+             padding: 8px 16px;
+             font-size: 12px;
+         }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            
+            .sidebar {
+                display: none;
+            }
+            
+            .quick-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo-section">
+                <div class="logo-icon">
+                    <img src="{{ url_for('static', filename='logo.png') }}" alt="نظام المبيعات">
+                </div>
+                <h2>نظام المبيعات</h2>
+            </div>
+            
+            <ul class="nav-menu">
+                <li><a href="{{ url_for('dashboard') }}"><i class="fas fa-home"></i> الرئيسية</a></li>
+                <li><a href="{{ url_for('invoices') }}"><i class="fas fa-shopping-cart"></i> الطلبات</a></li>
+                <li><a href="{{ url_for('employees') }}"><i class="fas fa-users"></i> الموظفين</a></li>
+                <li><a href="{{ url_for('products') }}"><i class="fas fa-boxes"></i> المخزون</a></li>
+                <li><a href="{{ url_for('customers') }}" class="active"><i class="fas fa-user-friends"></i> العملاء</a></li>
+                <li><a href="{{ url_for('reports') }}"><i class="fas fa-chart-bar"></i> التقارير</a></li>
+                {% if current_user.role == 'super_admin' or has_permission(current_user, 'users', 'view') %}
+                <li><a href="{{ url_for('users') }}"><i class="fas fa-user-shield"></i> إدارة المستخدمين</a></li>
+                {% endif %}
+                <li><a href="{{ url_for('logout') }}"><i class="fas fa-sign-out-alt"></i> تسجيل الخروج</a></li>
+            </ul>
+        </div>
+    
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="page-header">
+                <div class="header-content">
+                    <h1><i class="fas fa-shipping-fast"></i> الطلبات خارج للشحن</h1>
+                    <div class="header-actions">
+                        <button class="btn btn-success" onclick="exportOrders()">
+                            <i class="fas fa-download"></i>
+                            تصدير الطلبات
+                        </button>
+                        <a href="{{ url_for('invoices') }}" class="btn btn-primary">
+                            <i class="fas fa-arrow-left"></i>
+                            العودة للطلبات
+                        </a>
+                    </div>
+                </div>
+            </header>
+            
+            <div class="content-wrapper">
+                <!-- إحصائيات الطلبات -->
+                <div class="quick-stats">
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-shipping-fast"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">{{ orders|length }}</span>
+                            <span class="stat-label">إجمالي الطلبات</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">{{ orders|map(attribute='city')|unique|list|length }}</span>
+                            <span class="stat-label">عدد المحافظات</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">{{ orders|map(attribute='employee_name')|unique|list|length }}</span>
+                            <span class="stat-label">عدد الموظفين</span>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-item">
+                        <div class="stat-icon">
+                            <i class="fas fa-dollar-sign"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">{{ "{:,.0f}".format(orders|sum(attribute='final_total') or 0) }}</span>
+                            <span class="stat-label">إجمالي المبيعات</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- فلاتر الطلبات -->
+                <div class="filters-section">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="searchInput" placeholder="البحث في الطلبات..." onkeyup="filterOrders()">
+                    </div>
+                    
+                    <div class="filter-controls">
+                        <select id="cityFilter" onchange="filterOrders()">
+                            <option value="">جميع المدن</option>
+                            <option value="بغداد">بغداد</option>
+                            <option value="البصرة">البصرة</option>
+                            <option value="الموصل">الموصل</option>
+                            <option value="أربيل">أربيل</option>
+                            <option value="السليمانية">السليمانية</option>
+                        </select>
+                        
+                        <select id="employeeFilter" onchange="filterOrders()">
+                            <option value="">جميع الموظفين</option>
+                            <option value="إيمان">إيمان</option>
+                            <option value="ميريانا">ميريانا</option>
+                            <option value="صبا">صبا</option>
+                            <option value="عيسى">عيسى</option>
+                            <option value="لافا">لافا</option>
+                            <option value="نغم">نغم</option>
+                        </select>
+                    </div>
+                    
+                    <!-- أزرار تحديد -->
+                    <div class="selection-controls">
+                        <div class="select-all-section">
+                            <label>
+                                <input type="checkbox" id="selectAllOrders" onchange="selectAllOrders(this.checked)">
+                                تحديد الكل
+                            </label>
+                            <span id="selectedCount">0 طلب محدد</span>
+                        </div>
+                        
+                        <div class="bulk-actions" id="bulkActions" style="display: none;">
+                            <button class="btn btn-success" onclick="changeBulkStatus('تم التسليم')">
+                                <i class="fas fa-check"></i>
+                                تم التسليم
+                            </button>
+                            <button class="btn btn-warning" onclick="changeBulkStatus('خارج للشحن')">
+                                <i class="fas fa-shipping-fast"></i>
+                                خارج للشحن
+                            </button>
+                            <button class="btn btn-danger" onclick="changeBulkStatus('لم يستلم')">
+                                <i class="fas fa-times"></i>
+                                لم يستلم
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- جدول الطلبات -->
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <input type="checkbox" id="selectAllHeader" onchange="selectAllOrders(this.checked)">
+                                </th>
+                                <th>اسم العميل</th>
+                                <th>رقم الهاتف</th>
+                                <th>المدينة</th>
+                                <th>المنتج</th>
+                                <th>الكمية</th>
+                                <th>السعر</th>
+                                <th>الموظف</th>
+                                <th>التاريخ</th>
+                                <th>الإجراءات</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            {% for order in orders %}
+                            <tr data-order-id="{{ order.id }}">
+                                <td>
+                                    <input type="checkbox" class="order-select" value="{{ order.id }}" onchange="updateSelectedCount()">
+                                </td>
+                                <td>{{ order.customer_name }}</td>
+                                <td>{{ order.phone }}</td>
+                                <td>{{ order.city }}</td>
+                                <td>{{ order.product_name }}</td>
+                                <td>{{ order.quantity }}</td>
+                                <td>{{ "{:,.0f}".format(order.final_total) }}</td>
+                                <td>{{ order.employee_name }}</td>
+                                <td>{{ order.created_at.strftime('%Y-%m-%d') }}</td>
+                                <td>
+                                    <button class="action-btn edit-btn" onclick="changeOrderStatus({{ order.id }}, '{{ order.order_status or 'خارج للشحن' }}')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                    <button class="action-btn delete-btn" onclick="deleteOrder({{ order.id }})">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // فلترة الطلبات
+        function filterOrders() {
+            const searchValue = document.getElementById('searchInput').value.toLowerCase();
+            const cityValue = document.getElementById('cityFilter').value;
+            const employeeValue = document.getElementById('employeeFilter').value;
+            
+            const rows = document.querySelectorAll('#ordersTableBody tr');
+            let visibleCount = 0;
+            
+            rows.forEach(row => {
+                let showRow = true;
+                
+                // فلتر البحث
+                if (searchValue) {
+                    const customerName = row.cells[1].textContent.toLowerCase();
+                    const customerPhone = row.cells[2].textContent.toLowerCase();
+                    if (!customerName.includes(searchValue) && !customerPhone.includes(searchValue)) {
+                        showRow = false;
+                    }
+                }
+                
+                // فلتر المدينة
+                if (cityValue && showRow) {
+                    const city = row.cells[3].textContent;
+                    if (city !== cityValue) {
+                        showRow = false;
+                    }
+                }
+                
+                // فلتر الموظف
+                if (employeeValue && showRow) {
+                    const employee = row.cells[7].textContent;
+                    if (employee !== employeeValue) {
+                        showRow = false;
+                    }
+                }
+                
+                // إظهار/إخفاء الصف
+                if (showRow) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+            
+            console.log(`تم عرض ${visibleCount} طلب`);
+        }
+
+        // تغيير حالة الطلب
+        function changeOrderStatus(orderId, currentStatus) {
+            const newStatus = prompt('أدخل الحالة الجديدة (تم التسليم / لم يستلم / خارج للشحن):', currentStatus);
+            
+            if (newStatus && (newStatus === 'تم التسليم' || newStatus === 'لم يستلم' || newStatus === 'خارج للشحن')) {
+                fetch(`/change_order_status/${orderId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        status: newStatus
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('تم تغيير حالة الطلب بنجاح!');
+                        location.reload();
+                    } else {
+                        alert('حدث خطأ أثناء تغيير الحالة: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('خطأ:', error);
+                    alert('حدث خطأ أثناء تغيير الحالة');
+                });
+            }
+        }
+
+        // حذف طلب
+        function deleteOrder(orderId) {
+            if (confirm('هل أنت متأكد من حذف هذا الطلب؟')) {
+                fetch(`/delete_order/${orderId}`, {
+                    method: 'POST'
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert('تم حذف الطلب بنجاح!');
+                        location.reload();
+                    } else {
+                        alert('حدث خطأ أثناء حذف الطلب: ' + data.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('خطأ:', error);
+                    alert('حدث خطأ أثناء حذف الطلب');
+                });
+            }
+        }
+
+        // تصدير الطلبات
+        function exportOrders() {
+            const rows = document.querySelectorAll('#ordersTableBody tr');
+            let csvContent = "data:text/csv;charset=utf-8,";
+            
+            // إضافة رأس الجدول
+            csvContent += "اسم العميل,رقم الهاتف,المدينة,المنتج,الكمية,السعر,الموظف,التاريخ\n";
+            
+            // إضافة بيانات الطلبات
+            rows.forEach(row => {
+                if (row.style.display !== 'none') {
+                    const customerName = row.cells[1].textContent;
+                    const customerPhone = row.cells[2].textContent;
+                    const city = row.cells[3].textContent;
+                    const product = row.cells[4].textContent;
+                    const quantity = row.cells[5].textContent;
+                    const price = row.cells[6].textContent;
+                    const employee = row.cells[7].textContent;
+                    const date = row.cells[8].textContent;
+                    
+                    csvContent += `"${customerName}","${customerPhone}","${city}","${product}","${quantity}","${price}","${employee}","${date}"\n`;
+                }
+            });
+            
+            // تحميل الملف
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "طلبات_نظام المبيعات_خارج_للشحن.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            
+            console.log('تم تصدير الطلبات بنجاح');
+        }
+        
+        // دوال تحديد الطلبات
+        function selectAllOrders(checked) {
+            const checkboxes = document.querySelectorAll('.order-select');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = checked;
+            });
+            updateSelectedCount();
+        }
+        
+        function updateSelectedCount() {
+            const checkedBoxes = document.querySelectorAll('.order-select:checked');
+            const count = checkedBoxes.length;
+            document.getElementById('selectedCount').textContent = `${count} طلب محدد`;
+            
+            const bulkActions = document.getElementById('bulkActions');
+            if (count > 0) {
+                bulkActions.style.display = 'block';
+            } else {
+                bulkActions.style.display = 'none';
+            }
+        }
+        
+        function changeBulkStatus(newStatus) {
+            const checkedBoxes = document.querySelectorAll('.order-select:checked');
+            if (checkedBoxes.length === 0) {
+                alert('الرجاء تحديد الطلبات أولاً');
+                return;
+            }
+            
+            if (confirm(`هل تريد تغيير حالة ${checkedBoxes.length} طلب إلى "${newStatus}"؟`)) {
+                const orderIds = Array.from(checkedBoxes).map(cb => cb.value);
+                
+                fetch('/bulk_change_order_status', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        order_ids: orderIds,
+                        status: newStatus
+                    })
+                })
+                .then(response => response.json())
+             .then(data => {
+                 if (data.success) {
+                     alert(`تم تغيير حالة ${checkedBoxes.length} عميل بنجاح!`);
+                     location.reload();
+                 } else {
+                     alert('حدث خطأ أثناء تغيير الحالة: ' + data.error);
+                 }
+             })
+             .catch(error => {
+                 console.error('خطأ:', error);
+                 alert('حدث خطأ أثناء تغيير الحالة');
+             });
+         }
+     }
+     
+     // تحديث عداد التحديد عند تحميل الصفحة
+     document.addEventListener('DOMContentLoaded', function() {
+         updateSelectedCount();
+     });
+ </script>
+</body>
+</html>

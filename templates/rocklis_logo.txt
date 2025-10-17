@@ -1,0 +1,17 @@
+sales COMPANY LOGO
+====================
+
+Company Name: sales
+Industry: Shipping & Logistics
+Design: Modern, Technical, Professional
+
+Logo Specifications:
+- Primary Color: #FF0000 (Red)
+- Secondary Color: #000000 (Black)
+- Text Color: #FFFFFF (White)
+- Font: Modern, Technical
+- Style: Professional, Corporate
+
+This file serves as a placeholder for the actual logo image.
+The logo should be placed in this templates folder and referenced
+in the application's GUI design.
