@@ -29,7 +29,7 @@ login_manager.init_app(app)
 login_manager.login_view = 'login'
 
 # إعداد البوت
-BOT_TOKEN = "8305954082:AAHj2DlFzJ4Fb4H6w65c20jw3N5Pn3ksXYc"
+BOT_TOKEN = "YOUR_BOT_TOKEN_HERE"
 bot = Bot(token=BOT_TOKEN)
 
 
